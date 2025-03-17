@@ -14,7 +14,7 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table (name = "todos")
-public class todo {
+public class Todo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @CreatedDate
