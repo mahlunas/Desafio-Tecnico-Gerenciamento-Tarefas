@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 
 import org.springframework.data.annotation.CreatedDate;
 
+import br.com.marcelleluna.todolist.model.StatusToDo;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -13,14 +14,14 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table (name = "todos")
-public class todo {
+public class Todo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @CreatedDate
     private long id;
     private String title;
     private String description;
-    private String status;
+    private StatusToDo status;
     private LocalDate creationDate;
     private LocalDate endDate;
 
@@ -42,10 +43,10 @@ public class todo {
     public void setDescription(String description) {
         this.description = description;
     }
-    public String getStatus() {
+    public StatusToDo getStatus() {
         return status;
     }
-    public void setStatus(String status) {
+    public void setStatus(StatusToDo status) {
         this.status = status;
     }
     public LocalDate getCreationDate() {
