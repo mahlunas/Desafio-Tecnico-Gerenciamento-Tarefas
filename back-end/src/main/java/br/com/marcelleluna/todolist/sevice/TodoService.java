@@ -6,6 +6,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import br.com.marcelleluna.todolist.entity.Todo;
+
 import br.com.marcelleluna.todolist.repository.TodoRepository;
 
 @Service
