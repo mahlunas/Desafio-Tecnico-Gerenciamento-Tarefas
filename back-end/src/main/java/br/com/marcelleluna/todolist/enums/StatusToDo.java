@@ -1,4 +1,4 @@
-package br.com.marcelleluna.todolist.model;
+package br.com.marcelleluna.todolist.enums;
 
 public enum StatusToDo {
     PENDENTE,

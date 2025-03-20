@@ -1,6 +1,6 @@
 package br.com.marcelleluna.todolist.entity;
 
-import br.com.marcelleluna.todolist.model.StatusToDo;
+import br.com.marcelleluna.todolist.enums.StatusToDo;
 import jakarta.persistence.*;
 import org.springframework.data.annotation.CreatedDate;
 
