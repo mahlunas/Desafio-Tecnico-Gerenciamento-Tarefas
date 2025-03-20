@@ -1,18 +1,19 @@
-import React, {useEffect, useState} from "react";
+import { useQuery } from "@tanstack/react-query";
 import api from "../services/api";
 
+const fetchTodos = async () => {
+  const response = await api.get("/todos");
+  return response.data;
+};
+
 const TodoList = () =>{
-const [todos, setTodos] = useState([]);
+  const { data: todos, isLoading, isError, error } = useQuery({
+    queryKey: ["todos"], // Chave única para armazenar o cache
+    queryFn: fetchTodos, // Função para buscar os dados
+  });
 
-useEffect(() => {
-  api.get("/todos")
-    .then((response) => {
-      console.log("Dados da API:", response.data);
-      setTodos(response.data);
-    })
-    .catch((error) => console.error("Erro ao buscar tarefas:", error));
-}, []);
-
+  if (isLoading) return <p>Carregando...</p>;
+  if (isError) return <p>Erro ao buscar tarefas: {error.message}</p>;
 
   return (
     <div>
