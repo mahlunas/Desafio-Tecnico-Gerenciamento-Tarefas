@@ -1,35 +1,45 @@
 import React, { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import api from "../services/api";
+import useTodoStore from "../store/useTodoStore";  // Importando a store do Zustand
 
-const FormTodo = ()  => {
-    
-    const [title, setTitle] = useState("");
-    const [endDate, setEndDate] = useState("");
+const FormTodo = () => {
+  const [title, setTitle] = useState("");
+  const [endDate, setEndDate] = useState("");
 
-    const queryClient = useQueryClient(); 
+  const queryClient = useQueryClient();
 
-    const mutation = useMutation( {
-        mutationFn: async (newTask) => {
-            console.log("Enviando tarefa para API:", newTask);
-            const response = await api.post("/todos", newTask);
-            console.log("Resposta da API:", response.data);
-            return response.data;
-          },
-          onSuccess: () => {
-            queryClient.invalidateQueries(["todos"]);
-            setTitle("");
-            setEndDate("");
-          },
-    });
+  // Acessando a função de adicionar tarefa da store
+  const { addTodo } = useTodoStore();
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        mutation.mutate({title, endDate, creationDate: new Date().toISOString().split("T")[0], status: "PENDENTE"});
+  const mutation = useMutation({
+    mutationFn: async (newTask) => {
+      console.log("Enviando tarefa para API:", newTask);
+      const response = await api.post("/todos", newTask);
+      console.log("Resposta da API:", response.data);
+      return response.data;
+    },
+    onSuccess: (data) => {
+      queryClient.invalidateQueries(["todos"]);
+      addTodo(data);  // Atualiza a store com a nova tarefa
+      setTitle("");
+      setEndDate("");
+    },
+  });
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const newTask = {
+      title,
+      endDate,
+      creationDate: new Date().toISOString().split("T")[0],
+      status: "PENDENTE",
     };
+    mutation.mutate(newTask);
+  };
 
-    return (
-        <div className="bg-[#bcfbc5] p-8 rounded-lg shadow-lg">
+  return (
+    <div className="bg-[#bcfbc5] p-8 rounded-lg shadow-lg">
       <h1 className="text-2xl font-semibold mb-6 text-center">Nova Tarefa</h1>
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
@@ -61,9 +71,7 @@ const FormTodo = ()  => {
           <button
             type="submit"
             disabled={mutation.isLoading}
-            className={`w-1/2 py-2 text-white font-semibold rounded-md focus:outline-none ${
-              mutation.isLoading ? 'bg-gray-400' : 'bg-blue-500 hover:bg-blue-600'
-            }`}
+            className={w-1/2 py-2 text-white font-semibold rounded-md focus:outline-none ${mutation.isLoading ? 'bg-gray-400' : 'bg-blue-500 hover:bg-blue-600'}}
           >
             {mutation.isLoading ? "Adicionando..." : "Adicionar Tarefa"}
           </button>
@@ -87,7 +95,7 @@ const FormTodo = ()  => {
         </p>
       )}
     </div>
-    )
-}
+  );
+};
 
-export default FormTodo
+export default FormTodo;
