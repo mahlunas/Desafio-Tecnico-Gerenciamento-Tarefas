@@ -7,8 +7,6 @@ const FormTodo = ()  => {
     const [title, setTitle] = useState("");
     const [endDate, setEndDate] = useState("");
 
-    //const currentDate = new Date().toISOString();
-
     const queryClient = useQueryClient(); 
 
     const mutation = useMutation( {
@@ -23,24 +21,72 @@ const FormTodo = ()  => {
             setTitle("");
             setEndDate("");
           },
-        });
+    });
 
-      const handleSubmit = (e) => {
+    const handleSubmit = (e) => {
         e.preventDefault();
         mutation.mutate({title, endDate, creationDate: new Date().toISOString().split("T")[0], status: "PENDENTE"});
-      };
+    };
 
     return (
+        <div className="bg-[#bcfbc5] p-8 rounded-lg shadow-lg">
+      <h1 className="text-2xl font-semibold mb-6 text-center">Nova Tarefa</h1>
+      <form onSubmit={handleSubmit} className="space-y-4">
         <div>
-            <h1>New Task</h1>
-            <form onSubmit={handleSubmit}>
-                <input type="text" placeholder="Enter the task" value={title} onChange={(e) => setTitle(e.target.value)} required/>
-                <input type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)} required/>
-                <button type="submit" disabled={mutation.isLoading}>{mutation.isLoading ? "Adding" : "Add task"}</button>
-                <button type="button">Delete</button>
-                {mutation.isError && <p>Erro ao adicionar tarefa: {mutation.error.message}</p>}
-            </form>
+          <label htmlFor="title" className="block text-lg font-medium text-gray-700">Título da Tarefa</label>
+          <input
+            type="text"
+            id="title"
+            placeholder="Digite a tarefa"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            required
+            className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
         </div>
+
+        <div>
+          <label htmlFor="endDate" className="block text-lg font-medium text-gray-700">Data de Conclusão</label>
+          <input
+            type="date"
+            id="endDate"
+            value={endDate}
+            onChange={(e) => setEndDate(e.target.value)}
+            required
+            className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+        </div>
+
+        <div className="flex justify-between">
+          <button
+            type="submit"
+            disabled={mutation.isLoading}
+            className={`w-1/2 py-2 text-white font-semibold rounded-md focus:outline-none ${
+              mutation.isLoading ? 'bg-gray-400' : 'bg-blue-500 hover:bg-blue-600'
+            }`}
+          >
+            {mutation.isLoading ? "Adicionando..." : "Adicionar Tarefa"}
+          </button>
+
+          <button
+            type="button"
+            className="w-1/2 py-2 bg-red-500 text-white font-semibold rounded-md focus:outline-none hover:bg-red-600"
+            onClick={() => {
+              setTitle("");
+              setEndDate("");
+            }}
+          >
+            Limpar
+          </button>
+        </div>
+      </form>
+
+      {mutation.isError && (
+        <p className="mt-4 text-red-500 text-center">
+          Erro ao adicionar tarefa: {mutation.error.message}
+        </p>
+      )}
+    </div>
     )
 }
 
