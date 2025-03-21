@@ -1,5 +1,6 @@
 package br.com.marcelleluna.todolist.sevice;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.data.domain.Sort;
@@ -18,6 +19,10 @@ public class TodoService {
     }
 
     public List<Todo> create(Todo todo){
+        if (todo.getCreationDate() == null) {
+            todo.setCreationDate(LocalDate.now());
+        }
+
         todoRepository.save(todo);
         return list();
     }

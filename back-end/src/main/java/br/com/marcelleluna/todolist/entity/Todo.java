@@ -2,7 +2,6 @@ package br.com.marcelleluna.todolist.entity;
 
 import br.com.marcelleluna.todolist.enums.StatusToDo;
 import jakarta.persistence.*;
-import org.springframework.data.annotation.CreatedDate;
 
 import java.time.LocalDate;
 
@@ -19,11 +18,15 @@ public class Todo {
     @Enumerated(EnumType.ORDINAL)
     private StatusToDo status;
 
-    @CreatedDate
-    @Column(updatable = false)
+    @Column(name = "creation_date")
     private LocalDate creationDate;
 
     private LocalDate endDate;
+
+    @PrePersist
+    protected void onCreate() {
+        this.creationDate = LocalDate.now();
+    }
 
     public long getId() {
 
@@ -63,5 +66,13 @@ public class Todo {
     public void setEndDate(LocalDate endDate) {
 
         this.endDate = endDate;
+    }
+
+    public LocalDate getCreationDate() {
+        return creationDate;
+    }
+
+    public void setCreationDate(LocalDate creationDate) {
+        this.creationDate = creationDate;
     }
 }

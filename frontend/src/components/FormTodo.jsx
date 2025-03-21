@@ -7,6 +7,8 @@ const FormTodo = ()  => {
     const [title, setTitle] = useState("");
     const [endDate, setEndDate] = useState("");
 
+    //const currentDate = new Date().toISOString();
+
     const queryClient = useQueryClient(); 
 
     const mutation = useMutation( {
@@ -25,7 +27,7 @@ const FormTodo = ()  => {
 
       const handleSubmit = (e) => {
         e.preventDefault();
-        mutation.mutate({title, endDate});
+        mutation.mutate({title, endDate, creationDate: new Date().toISOString().split("T")[0], status: "PENDENTE"});
       };
 
     return (
