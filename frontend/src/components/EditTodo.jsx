@@ -1,88 +1,71 @@
-// EditTodo.jsx
-import { useState, useEffect } from 'react';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import api from '../services/api';
+import { useState } from "react";
 
-const editTodo = async (id, updatedData) => {
-  await api.put(`/todos/${id}`, updatedData);
-};
-
-const EditTodo = ({ todo, onCancel }) => {
+const EditTodo = ({ todo, onClose, onSave }) => {
   const [title, setTitle] = useState(todo.title);
-  const [status, setStatus] = useState(todo.status);
   const [endDate, setEndDate] = useState(todo.endDate);
-  
-  const queryClient = useQueryClient();
-  
-  const mutation = useMutation({
-    mutationFn: (updatedTodo) => editTodo(todo.id, updatedTodo),
-    onSuccess: () => {
-      queryClient.invalidateQueries(["todos"]);
-    }
-  });
+  const [status, setStatus] = useState(todo.status);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    mutation.mutate({
-      title,
-      status,
-      endDate,
-    });
+    const updatedTodo = { ...todo, title, endDate, status };
+    onSave(updatedTodo); // Chama a função onSave passada como prop
   };
 
   return (
-    <div className="bg-[#fac1c0] p-8 rounded-lg shadow-lg">
-      <h2 className="text-2xl font-semibold mb-4">Editar Tarefa</h2>
-      <form onSubmit={handleSubmit}>
-        <div className="mb-4">
-          <label className="block text-sm font-medium">Título</label>
-          <input
-            type="text"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            className="w-full p-2 rounded-lg border border-gray-300"
-          />
-        </div>
-
-        <div className="mb-4">
-          <label className="block text-sm font-medium">Status</label>
-          <select
-            value={status}
-            onChange={(e) => setStatus(e.target.value)}
-            className="w-full p-2 rounded-lg border border-gray-300"
-          >
-            <option value="PENDENTE">Pendente</option>
-            <option value="EM_ANDAMENTO">Em Andamento</option>
-            <option value="CONCLUIDO">Concluído</option>
-          </select>
-        </div>
-
-        <div className="mb-4">
-          <label className="block text-sm font-medium">Data de Entrega</label>
-          <input
-            type="date"
-            value={endDate}
-            onChange={(e) => setEndDate(e.target.value)}
-            className="w-full p-2 rounded-lg border border-gray-300"
-          />
-        </div>
-
-        <div className="flex justify-end space-x-4">
-          <button
-            type="button"
-            onClick={onCancel}
-            className="bg-gray-300 text-black py-2 px-4 rounded-md"
-          >
-            Cancelar
-          </button>
-          <button
-            type="submit"
-            className="bg-[#bdb2ff] text-black py-2 px-4 rounded-md"
-          >
-            Salvar Alterações
-          </button>
-        </div>
-      </form>
+    <div className="modal fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center z-50">
+      <div className="bg-white p-6 rounded-lg shadow-lg w-full sm:w-96">
+        <h2 className="text-2xl font-semibold text-center mb-4">Editar Tarefa</h2>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium mb-2">Título</label>
+            <input
+              type="text"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              required
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium mb-2">Data de Entrega</label>
+            <input
+              type="date"
+              value={endDate}
+              onChange={(e) => setEndDate(e.target.value)}
+              className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              required
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium mb-2">Status</label>
+            <select
+              value={status}
+              onChange={(e) => setStatus(e.target.value)}
+              className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              required
+            >
+              <option value="PENDENTE">Pendente</option>
+              <option value="EM_ANDAMENTO">Em Andamento</option>
+              <option value="CONCLUIDO">Concluído</option>
+            </select>
+          </div>
+          <div className="flex justify-between mt-6">
+            <button
+              type="submit"
+              className="w-full sm:w-auto bg-blue-500 text-white px-6 py-3 rounded-lg hover:bg-blue-600 transition-colors"
+            >
+              Salvar
+            </button>
+            <button
+              type="button"
+              onClick={onClose}
+              className="w-full sm:w-auto bg-gray-500 text-white px-6 py-3 rounded-lg hover:bg-gray-600 transition-colors"
+            >
+              Fechar
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
   );
 };
